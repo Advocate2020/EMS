@@ -1,0 +1,197 @@
+﻿/* auth.css */
+
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #FFFFFF;
+    color: #253D90;
+}
+
+.container {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* Left section */
+.left-panel {
+    flex: 1;
+    background: #253D90;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 4rem;
+    background-image: url('../../images/login-photo.png'); /* optional */
+    background-size: cover;
+    background-blend-mode: multiply;
+}
+
+    .left-panel h1 {
+        font-size: 1.75rem;
+        font-weight: bold;
+        margin-bottom: 1rem;
+    }
+
+    .left-panel p {
+        font-size: 1rem;
+        line-height: 1.5;
+    }
+
+.cta-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+    .cta-buttons .btn {
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 6px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+.btn-yellow {
+    background-color: #FFC107;
+    color: #000;
+}
+
+.btn-white {
+    background-color: #FFFFFF;
+    color: #253D90;
+    border: 2px solid #253D90;
+}
+
+/* Right section */
+.right-panel {
+    flex: 1;
+    background-color: #FFFFFF;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 4rem;
+}
+
+    .right-panel h2 {
+        color: #253D90;
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .right-panel p.subtitle {
+        color: #969696;
+        margin-bottom: 2rem;
+    }
+
+form {
+    display: grid;
+    gap: 1.25rem;
+}
+
+.input-group {
+    display: flex;
+    gap: 1rem;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+}
+
+    /* Label styling */
+    .form-group label {
+        font-weight: 600;
+        margin-bottom: 5px;
+        color: #253D90; /* Primary color for label */
+    }
+
+    /* Input styling */
+    .form-group input[type="text"],
+    .form-group input[type="email"],
+    .form-group input[type="password"],
+    .form-group input[type="tel"] {
+        width: 100%;
+        padding: 10px;
+        border: 2px solid #ccc;
+        border-radius: 5px;
+        font-size: 1rem;
+        transition: border-color 0.3s ease;
+        outline: none;
+    }
+
+    /* Focus state */
+    .form-group input:focus {
+        border-color: #253D90;
+        caret-color: #253D90;
+    }
+
+    /* Error state */
+    .form-group input.input-validation-error {
+        border-color: red !important;
+    }
+
+        .form-group input.input-validation-error:focus {
+            border-color: red !important;
+            caret-color: red !important;
+        }
+
+    /* Validation message styling */
+    .form-group span.field-validation-error,
+    .form-group .text-danger {
+        font-size: 0.9rem;
+        color: red;
+        margin-top: 5px;
+    }
+
+/* Focus state (normal) */
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="tel"]:focus {
+    border-color: #253D90;
+    caret-color: #253D90; /* Set the blinking cursor color */
+}
+
+/* Validation error */
+input.input-validation-error {
+    border-color: red !important;
+}
+
+    /* Focus on input with validation error */
+    input.input-validation-error:focus {
+        border-color: red !important;
+        caret-color: red !important;
+    }
+
+label {
+    color: #253D90;
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+    display: block;
+}
+
+.checkbox {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    color: #253D90;
+}
+
+button {
+    background-color: #253D90;
+    color: white;
+    border: none;
+    padding: 0.75rem;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.small-text {
+    font-size: 0.85rem;
+    color: #969696;
+    text-align: center;
+    margin-top: 1rem;
+}
