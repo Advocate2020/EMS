@@ -1,16 +1,43 @@
-﻿using EmployeeManagementSystem.Models.Auth;
+﻿using EmployeeManagementSystem.BusinessLogic;
+using EmployeeManagementSystem.Models.Auth;
 using EmployeeManagementSystem.Services;
+using Firebase.Auth;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EmployeeManagementSystem.Controllers.Auth
 {
     public class AuthController : Controller
     {
+        private readonly AuthBL _authBL;
         private readonly FirebaseAuthService _firebaseAuthService;
 
-        public AuthController(FirebaseAuthService firebaseAuthService)
+        public AuthController(AuthBL authBL, FirebaseAuthService firebaseAuthService)
         {
+            _authBL = authBL;
             _firebaseAuthService = firebaseAuthService;
+        }
+
+        [HttpGet]
+        public IActionResult Register()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Register(RegisterViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var (success, error) = await _authBL.RegisterUserAsync(model);
+            if (!success)
+            {
+                ModelState.AddModelError(string.Empty, error);
+                return View(model);
+            }
+
+            return RedirectToAction("Login");
         }
 
         [HttpGet]
@@ -24,74 +51,49 @@ namespace EmployeeManagementSystem.Controllers.Auth
         public async Task<IActionResult> Login(LoginViewModel model)
         {
             if (!ModelState.IsValid)
-            {
                 return View(model);
-            }
 
             try
             {
-                var user = await _firebaseAuthService.Login(model.Username, model.Password!);
+                var user = await _firebaseAuthService.Login(model.Username, model.Password);
 
                 if (user != null)
                 {
-                    // TODO: Set up session, cookies, etc.
+                    var idToken = await user.GetIdTokenAsync();
+
+                    // Store token in cookie
+                    var cookieOptions = new CookieOptions
+                    {
+                        HttpOnly = true,
+                        Secure = true,
+                        Expires = model.RememberMe ? DateTimeOffset.UtcNow.AddDays(7) : DateTimeOffset.UtcNow.AddHours(1),
+                        SameSite = SameSiteMode.Strict
+                    };
+
+                    Response.Cookies.Append("FirebaseToken", idToken, cookieOptions);
+
                     return RedirectToAction("Index", "Home");
                 }
 
-                ModelState.AddModelError(string.Empty, "Login failed. Please try again.");
+                ModelState.AddModelError(string.Empty, "Login failed.");
+                return View(model);
             }
-            catch (Firebase.Auth.FirebaseAuthException ex)
+            catch (FirebaseAuthException ex)
             {
-                var errorCode = FirebaseAuthExceptionHandler.HandleException(ex);
-                var errorMessage = FirebaseAuthExceptionHandler.GenerateExceptionMessage(errorCode);
-                ModelState.AddModelError(string.Empty, errorMessage);
+                var status = FirebaseAuthExceptionHandler.HandleException(ex);
+                var message = FirebaseAuthExceptionHandler.GenerateExceptionMessage(status);
+
+                ModelState.AddModelError(string.Empty, message);
+                return View(model);
             }
-
-            return View(model);
         }
-
-        [HttpGet]
-        public IActionResult Register()
-        {
-            return View();
-        }
-
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Register(RegisterViewModel model)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return View(model);
-        //    }
-
-        //    try
-        //    {
-        //        var user = await _firebaseAuthService.SignUp(model.Email, model.Password!);
-
-        //        if (user != null)
-        //        {
-        //            // Optionally auto login or redirect
-        //            return RedirectToAction("Login", "Auth");
-        //        }
-
-        //        ModelState.AddModelError(string.Empty, "Registration failed. Please try again.");
-        //    }
-        //    catch (Firebase.Auth.FirebaseAuthException ex)
-        //    {
-        //        var errorCode = FirebaseAuthExceptionHandler.HandleException(ex);
-        //        var errorMessage = FirebaseAuthExceptionHandler.GenerateExceptionMessage(errorCode);
-        //        ModelState.AddModelError(string.Empty, errorMessage);
-        //    }
-
-        //    return View(model);
-        //}
 
         [HttpPost]
         public IActionResult Logout()
         {
+            Response.Cookies.Delete("FirebaseToken");
             _firebaseAuthService.SignOut();
-            return RedirectToAction("Login", "Auth");
+            return RedirectToAction("Login");
         }
     }
 }

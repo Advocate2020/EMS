@@ -28,12 +28,15 @@
                     <span asp-validation-for="Password" class="text-danger"></span>
                 </div>
                 <div class="checkbox">
-                    <input type="checkbox" id="remember">
+                    <input asp-for="RememberMe" type="checkbox" id="remember" />
                     <label for="remember">Remember me</label>
-                    <a href="#" style="margin-left: auto;">Reset Password?</a>
                 </div>
                 <button type="submit">Sign In</button>
-                <p class="small-text">Don't have an account yet? <a href="register.html">Join KRIS today.</a></p>
+                <p class="small-text">
+                    Don't have an account yet?
+                    <a asp-action="Register" asp-controller="Auth">Join KRIS today.</a>
+                </p>
+
             </form>
         </div>
         <div class="left-panel">

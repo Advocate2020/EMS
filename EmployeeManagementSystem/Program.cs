@@ -1,3 +1,5 @@
+using EmployeeManagementSystem.BusinessLogic;
+using EmployeeManagementSystem.Network;
 using EmployeeManagementSystem.Services;
 using Firebase.Auth;
 using Firebase.Auth.Providers;
@@ -32,7 +34,9 @@ builder.Services.AddSingleton(sp =>
 });
 
 // Register your service
+builder.Services.AddHttpClient<AuthNetworkService>();
 builder.Services.AddScoped<FirebaseAuthService>();
+builder.Services.AddScoped<AuthBL>();
 
 var app = builder.Build();
 
